@@ -29,19 +29,15 @@ int main(int argc, char *argv[]) {
     while(fgets(line, sizeof(line), stdin)) {
         int i, state = 1, key = -1;
         char *t;
-        for (t = strtok(line, "="); t; t = strtok(NULL, "\n")) {
+        for (t = strtok(line, "="); t; t = strtok(NULL, "\n"))
             switch (state) {
-                case 0: break;
                 case 1: 
                     for(i = 0; i < numkeys; ++i)
                         if (!strcmp(t, keys[i])) {
                             key = i;
                             break;
                         }
-                    if (key < 0) 
-                        state = 0;
-                    else
-                        state = 2;
+                    state = key < 0 ? 0 : 2;
                     break;
                 case 2: 
                     strncpy(values[key], t, MAX_VALUE_LEN);
@@ -50,7 +46,6 @@ int main(int argc, char *argv[]) {
                 case 3: 
                     state = 4;
             }
-        }
         if (state != 0 && state != 3) {
             fprintf(stderr, "Unexpected input: %s\n", line);
             return 1;
@@ -73,9 +68,8 @@ int get(char *repository, char *username, size_t maxusername, char *password, si
         strncpy(password, (char*)pcred->CredentialBlob, maxpassword);
         CredFree(pcred);
         return 1;
-    } else {
+    } else
         return 0;
-    }
 }
     
 void store(char *repository, char *username, char *password) {
@@ -98,7 +92,6 @@ void store(char *repository, char *username, char *password) {
         exit(1);
     }
 }
-
 
 void erase(char *repository) {
     CredDelete(repository, CRED_TYPE_GENERIC, 0);
